@@ -12,6 +12,3 @@ const firebaseConfig = {
 
 const fb = firebase.initializeApp(firebaseConfig);
 export const db = fb.firestore();
-
-console.log('fb =>', fb);
-console.log('db =>', db);

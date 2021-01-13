@@ -1,16 +1,18 @@
 import React from 'react';
-import UserForm from './components/UserForm';
-import Users from './components/Users';
+import Contacts from './components/Contacts';
 
 const App = () => {
   return (
     <div className='container p-4'>
       <div className='row'>
-        <UserForm />
-        <Users />
+        <Contacts />
       </div>
     </div>
   );
 };
 
 export default App;
+
+// app pages: auth, contacts, favorites
+// contact values: name, phone, email
+// card buttons: edit, delete, add to favorites
