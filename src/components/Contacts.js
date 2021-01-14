@@ -5,13 +5,31 @@ import ContactForm from './ContactForm';
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
+  const [idForEdit, setIdForEdit] = useState('');
 
   const addContact = async (contact) => {
-    await db.collection('contacts').doc().set(contact);
-    toast('Contact Added', {
-      type: 'success',
-      autoClose: 1500,
-    });
+    try {
+      await db.collection('contacts').doc().set(contact);
+      toast('Contact Added', {
+        type: 'success',
+        autoClose: 1000,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const editContact = async (contact) => {
+    try {
+      await db.collection('contacts').doc(idForEdit).update(contact);
+      toast('Contact Updated', {
+        type: 'info',
+        autoClose: 1000,
+      });
+      setIdForEdit('');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const deleteContact = async (id) => {
@@ -19,7 +37,7 @@ const Contacts = () => {
       await db.collection('contacts').doc(id).delete();
       toast('Contact Deleted', {
         type: 'error',
-        autoClose: 1500,
+        autoClose: 1000,
       });
     }
   };
@@ -41,7 +59,7 @@ const Contacts = () => {
   return (
     <>
       <div className='col-md-4 p-2'>
-        <ContactForm addContact={addContact} />
+        <ContactForm {...{ addContact, editContact, idForEdit }} />
       </div>
       <div className='col-md-8 p-2'>
         {contacts.map((contact) => (
@@ -49,11 +67,16 @@ const Contacts = () => {
             <div className='card-body'>
               <div className='d-flex justify-content-between'>
                 <h5>{contact.name}</h5>
-                <i
-                  className='material-icons text-danger'
-                  onClick={() => deleteContact(contact.id)}>
-                  close
-                </i>
+                <div>
+                  <i className='material-icons' onClick={() => setIdForEdit(contact.id)}>
+                    edit
+                  </i>
+                  <i
+                    className='material-icons text-danger'
+                    onClick={() => deleteContact(contact.id)}>
+                    close
+                  </i>
+                </div>
               </div>
               <h5>{contact.phone}</h5>
               <h5>{contact.email}</h5>

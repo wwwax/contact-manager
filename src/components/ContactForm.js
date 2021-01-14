@@ -1,24 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { db } from '../firebase';
 
-const ContactForm = ({ addContact }) => {
+const ContactForm = ({ addContact, editContact, idForEdit }) => {
   const initialContactState = {
     name: '',
     phone: '',
     email: '',
   };
 
-  const [contact, setContact] = useState(initialContactState);
+  const [contact, setContact] = useState({ ...initialContactState });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setContact({ ...contact, [name]: value });
   };
 
+  const validateEmail = (str) => {
+    console.log(str);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    addContact(contact);
-    setContact(initialContactState);
+    validateEmail('validating email...');
+    if (idForEdit === '') {
+      addContact(contact);
+    } else {
+      editContact(contact);
+    }
+    setContact({ ...initialContactState });
   };
+
+  const getContactById = async (id) => {
+    const doc = await db.collection('contacts').doc(id).get();
+    setContact({ ...doc.data() });
+  };
+
+  useEffect(() => {
+    if (idForEdit === '') {
+      setContact({ ...initialContactState });
+    } else {
+      getContactById(idForEdit);
+    }
+  }, [idForEdit]);
 
   return (
     <form className='card card-body' onSubmit={handleSubmit}>
@@ -64,7 +87,9 @@ const ContactForm = ({ addContact }) => {
         />
       </div>
 
-      <button className='btn btn-primary btn-block'>add</button>
+      <button className='btn btn-primary btn-block'>
+        {idForEdit === '' ? 'add' : 'update'}
+      </button>
     </form>
   );
 };
