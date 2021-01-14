@@ -1,5 +1,7 @@
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
 import Contacts from './components/Contacts';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
@@ -7,6 +9,7 @@ const App = () => {
       <div className='row'>
         <Contacts />
       </div>
+      <ToastContainer />
     </div>
   );
 };

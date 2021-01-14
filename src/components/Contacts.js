@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { db } from '../firebase';
 import ContactForm from './ContactForm';
 
@@ -7,12 +8,19 @@ const Contacts = () => {
 
   const addContact = async (contact) => {
     await db.collection('contacts').doc().set(contact);
-    alert('contact added!');
+    toast('Contact Added', {
+      type: 'success',
+      autoClose: 1500,
+    });
   };
 
   const deleteContact = async (id) => {
     if (window.confirm('are you sure you want to delete this contact?')) {
       await db.collection('contacts').doc(id).delete();
+      toast('Contact Deleted', {
+        type: 'error',
+        autoClose: 1500,
+      });
     }
   };
 
