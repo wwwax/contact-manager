@@ -64,7 +64,7 @@ const ContactForm = ({ addContact }) => {
         />
       </div>
 
-      <button className='btn btn-primary btn-block'>save</button>
+      <button className='btn btn-primary btn-block'>add</button>
     </form>
   );
 };
