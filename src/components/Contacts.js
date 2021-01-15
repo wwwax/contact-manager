@@ -78,7 +78,7 @@ const Contacts = () => {
                   </i>
                 </div>
               </div>
-              <h5>{contact.phone}</h5>
+              <h5>{contact.tel}</h5>
               <h5>{contact.email}</h5>
             </div>
           </div>
