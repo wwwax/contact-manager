@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
 import { db } from '../firebase';
 import ContactForm from './ContactForm';
-import Nav from './Nav';
+import 'react-toastify/dist/ReactToastify.css';
 
-const Contacts = ({ onLogout }) => {
+const Contacts = () => {
   const [contacts, setContacts] = useState([]);
   const [idForEdit, setIdForEdit] = useState('');
 
@@ -34,13 +35,11 @@ const Contacts = ({ onLogout }) => {
   };
 
   const deleteContact = async (id) => {
-    if (window.confirm('are you sure you want to delete this contact?')) {
-      await db.collection('contacts').doc(id).delete();
-      toast('Contact Deleted', {
-        type: 'error',
-        autoClose: 1000,
-      });
-    }
+    await db.collection('contacts').doc(id).delete();
+    toast('Contact Deleted', {
+      type: 'error',
+      autoClose: 1000,
+    });
   };
 
   const getContacts = async () => {
@@ -53,10 +52,10 @@ const Contacts = ({ onLogout }) => {
     });
   };
 
-  const addToFavorites = () => {
-    console.log('add to favorites');
+  const addToFavorites = async (contact) => {
+    await db.collection('favorite-contacts').doc().set(contact);
     toast('Contact Added To Favorites', {
-      type: 'info',
+      type: 'success',
       autoClose: 2000,
     });
   };
@@ -67,41 +66,45 @@ const Contacts = ({ onLogout }) => {
 
   return (
     <>
-      <Nav onLogout={onLogout} />
-      <div className='col-md-4 p-2'>
-        {/* <ContactForm {...{ addContact, editContact, idForEdit, onLogout }} /> */}
-        <ContactForm
-          addContact={addContact}
-          editContact={editContact}
-          idForEdit={idForEdit}
-        />
-      </div>
-      <div className='col-md-8 p-2'>
-        {contacts.map((contact) => (
-          <div className='card mb-1' key={contact.id}>
-            <div className='card-body'>
-              <div className='d-flex justify-content-between'>
-                <h5>{contact.name}</h5>
-                <div>
-                  <i className='material-icons' onClick={addToFavorites}>
-                    star
-                  </i>
-                  <i className='material-icons' onClick={() => setIdForEdit(contact.id)}>
-                    edit
-                  </i>
-                  <i
-                    className='material-icons text-danger'
-                    onClick={() => deleteContact(contact.id)}>
-                    close
-                  </i>
+      <div className='row'>
+        <div className='col-md-4 p-2'>
+          {/* <ContactForm {...{ addContact, editContact, idForEdit }} /> */}
+          <ContactForm
+            addContact={addContact}
+            editContact={editContact}
+            idForEdit={idForEdit}
+          />
+        </div>
+        <div className='col-md-8 p-2'>
+          {contacts.map((contact) => (
+            <div className='card mb-1' key={contact.id}>
+              <div className='card-body'>
+                <div className='d-flex justify-content-between'>
+                  <h5>{contact.name}</h5>
+                  <div>
+                    <i className='material-icons' onClick={() => addToFavorites(contact)}>
+                      star
+                    </i>
+                    <i
+                      className='material-icons'
+                      onClick={() => setIdForEdit(contact.id)}>
+                      edit
+                    </i>
+                    <i
+                      className='material-icons text-danger'
+                      onClick={() => deleteContact(contact.id)}>
+                      close
+                    </i>
+                  </div>
                 </div>
+                <h5>{contact.tel}</h5>
+                <h5>{contact.email}</h5>
               </div>
-              <h5>{contact.tel}</h5>
-              <h5>{contact.email}</h5>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
+      <ToastContainer />
     </>
   );
 };
