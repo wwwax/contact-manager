@@ -1,4 +1,6 @@
-const GoogleLogin = ({ onLogin }) => {
+import React from 'react';
+
+const Login = ({ onLogin }) => {
   return (
     <div className='row d-flex justify-content-center'>
       <div className='col-md-4'>
@@ -13,4 +15,4 @@ const GoogleLogin = ({ onLogin }) => {
   );
 };
 
-export default GoogleLogin;
+export default Login;

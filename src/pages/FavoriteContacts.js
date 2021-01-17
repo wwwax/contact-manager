@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import { db } from '../firebase';
-import { ToastContainer } from 'react-toastify';
-import { toast } from 'react-toastify';
 
 const FavoriteContacts = () => {
   const [contacts, setContacts] = useState([]);
@@ -20,7 +19,7 @@ const FavoriteContacts = () => {
     await db.collection('favorite-contacts').doc(id).delete();
     toast('Contact Removed From Favorites', {
       type: 'error',
-      autoClose: 2000,
+      autoClose: 1500,
     });
   };
 
@@ -29,20 +28,20 @@ const FavoriteContacts = () => {
   }, []);
 
   return (
-    <div>
+    <>
       <div className='row'>
-        <div className='col-md-12 p-4'>
+        <div className='col-md-12 p-2'>
           {contacts.map((contact) => (
-            <div className='card mb-1' key={contact.id}>
+            <div className='card mb-2' key={contact.id}>
               <div className='card-body'>
                 <div className='d-flex justify-content-between'>
                   <h5>{contact.name}</h5>
                   <div>
-                    <i
-                      className='material-icons text-danger'
+                    <button
+                      className='btn btn-danger btn-block'
                       onClick={() => removeFromFavorites(contact.id)}>
-                      close
-                    </i>
+                      Remove
+                    </button>
                   </div>
                 </div>
                 <h5>{contact.tel}</h5>
@@ -53,7 +52,7 @@ const FavoriteContacts = () => {
         </div>
       </div>
       <ToastContainer />
-    </div>
+    </>
   );
 };
 

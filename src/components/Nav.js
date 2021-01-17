@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const Nav = ({ onLogout }) => {
   return (
@@ -6,23 +6,38 @@ const Nav = ({ onLogout }) => {
       <div className='col-md-12 p-2'>
         <ul className='nav nav-tabs'>
           <li className='nav-item'>
-            <Link to='/' className='nav-link' data-toggle='tab'>
-              Contacts
-            </Link>
-          </li>
-          <li className='nav-item'>
-            <Link to='/favorites' className='nav-link' data-toggle='tab'>
-              Favorites
-            </Link>
-          </li>
-          <li className='nav-item'>
-            <Link
+            <NavLink
+              exact
               to='/'
-              className='nav-link text-danger'
+              className='nav-link'
+              activeStyle={{
+                color: '#DF691A',
+              }}
+              data-toggle='tab'>
+              Contacts
+            </NavLink>
+          </li>
+          <li className='nav-item'>
+            <NavLink
+              exact
+              to='/favorites'
+              className='nav-link'
+              activeStyle={{
+                color: '#DF691A',
+              }}
+              data-toggle='tab'>
+              Favorites
+            </NavLink>
+          </li>
+          <li className='nav-item'>
+            <NavLink
+              exact
+              to='/'
+              className='nav-link'
               data-toggle='tab'
               onClick={onLogout}>
               Log Out
-            </Link>
+            </NavLink>
           </li>
         </ul>
       </div>
