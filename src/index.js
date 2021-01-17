@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './firebase';
-import App from './App';
+import GoogleLogin from './google-auth';
 import 'bootswatch/dist/superhero/bootstrap.min.css';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<GoogleLogin />, document.getElementById('root'));

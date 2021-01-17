@@ -1,21 +1,18 @@
 import React from 'react';
+// import { Route, BrowserRouter as Router } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import Contacts from './components/Contacts';
 import 'react-toastify/dist/ReactToastify.css';
 
-const App = () => {
+const App = ({ onLogout }) => {
   return (
-    <div className='container p-4'>
+    <>
       <div className='row'>
-        <Contacts />
+        <Contacts onLogout={onLogout} />
       </div>
       <ToastContainer />
-    </div>
+    </>
   );
 };
 
 export default App;
-
-// app pages: auth, contacts, favorites
-// contact values: name, phone, email
-// card buttons: edit, delete, add to favorites

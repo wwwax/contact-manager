@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { db } from '../firebase';
 import ContactForm from './ContactForm';
+import Nav from './Nav';
 
-const Contacts = () => {
+const Contacts = ({ onLogout }) => {
   const [contacts, setContacts] = useState([]);
   const [idForEdit, setIdForEdit] = useState('');
 
@@ -52,14 +53,28 @@ const Contacts = () => {
     });
   };
 
+  const addToFavorites = () => {
+    console.log('add to favorites');
+    toast('Contact Added To Favorites', {
+      type: 'info',
+      autoClose: 2000,
+    });
+  };
+
   useEffect(() => {
     getContacts();
   }, []);
 
   return (
     <>
+      <Nav onLogout={onLogout} />
       <div className='col-md-4 p-2'>
-        <ContactForm {...{ addContact, editContact, idForEdit }} />
+        {/* <ContactForm {...{ addContact, editContact, idForEdit, onLogout }} /> */}
+        <ContactForm
+          addContact={addContact}
+          editContact={editContact}
+          idForEdit={idForEdit}
+        />
       </div>
       <div className='col-md-8 p-2'>
         {contacts.map((contact) => (
@@ -68,6 +83,9 @@ const Contacts = () => {
               <div className='d-flex justify-content-between'>
                 <h5>{contact.name}</h5>
                 <div>
+                  <i className='material-icons' onClick={addToFavorites}>
+                    star
+                  </i>
                   <i className='material-icons' onClick={() => setIdForEdit(contact.id)}>
                     edit
                   </i>
