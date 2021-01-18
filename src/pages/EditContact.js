@@ -4,7 +4,11 @@ import { db } from '../firebase';
 import 'react-toastify/dist/ReactToastify.css';
 
 const EditContact = () => {
-  const initialContactState = { name: '', tel: '', email: '' };
+  const initialContactState = {
+    name: '',
+    tel: '',
+    email: '',
+  };
   const [contact, setContact] = useState({ ...initialContactState });
 
   const handleInputChange = (e) => {
@@ -13,24 +17,17 @@ const EditContact = () => {
   };
 
   const getSelectedContact = async () => {
-    const arr = [];
-    const querySnapshot = await db.collection('contact-for-edit-test-10').get();
+    const querySnapshot = await db.collection('contact-edit').get();
     querySnapshot.forEach((doc) => {
-      arr.push({ ...doc.data(), id: doc.id });
+      setContact({ ...doc.data(), marker: doc.id });
     });
-    setContact(arr[0]);
   };
-
-  console.log('from edit =>', contact);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const marker = contact.marker;
-    console.log('fddfds =>', contact);
-
-    await db.collection('contacts').doc(marker).update(contact);
-    await db.collection('contacts-for-edit-test-10').doc(contact.id).delete();
+    const { id, marker } = contact;
+    await db.collection('contacts').doc(id).update(contact);
+    await db.collection('contact-edit').doc(marker).delete();
     setContact({ ...initialContactState });
     toast('Link Updated Successfully', {
       type: 'success',

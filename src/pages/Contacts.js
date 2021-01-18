@@ -11,7 +11,7 @@ const Contacts = () => {
     db.collection('contacts').onSnapshot((querySnapshot) => {
       const docs = [];
       querySnapshot.forEach((doc) => {
-        docs.push({ ...doc.data(), id: doc.id, marker: doc.id });
+        docs.push({ ...doc.data(), id: doc.id });
       });
       setContacts(docs);
     });
@@ -34,10 +34,8 @@ const Contacts = () => {
   };
 
   const getContactForEdit = async (contact) => {
-    await db.collection('contact-for-edit-test-10').doc().set(contact);
+    await db.collection('contact-edit').doc().set(contact);
   };
-
-  console.log('from contacts =>', contacts);
 
   useEffect(() => {
     getContacts();
@@ -47,7 +45,7 @@ const Contacts = () => {
     <>
       <div className='row'>
         <div className='col-md-12 p-2'>
-          <Link className='btn btn-info btn-block mb-4' to='/add'>
+          <Link className='btn btn-success btn-block mb-4' to='/add'>
             Add Contact
           </Link>
 
@@ -62,7 +60,7 @@ const Contacts = () => {
                   </div>
                   <div>
                     <button
-                      className='btn btn-success btn-block'
+                      className='btn btn-info btn-block'
                       onClick={() => addToFavorites(contact)}>
                       Favorites
                     </button>
