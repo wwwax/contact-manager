@@ -26,13 +26,17 @@ const EditContact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { id, marker } = contact;
-    await db.collection('contacts').doc(id).update(contact);
-    await db.collection('contact-edit').doc(marker).delete();
-    setContact({ ...initialContactState });
-    toast('Link Updated Successfully', {
-      type: 'success',
-      autoClose: 1500,
-    });
+    try {
+      await db.collection('contacts').doc(id).update(contact);
+      await db.collection('contact-edit').doc(marker).delete();
+      setContact({ ...initialContactState });
+      toast('Link Updated Successfully', {
+        type: 'success',
+        autoClose: 1500,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -89,7 +93,7 @@ const EditContact = () => {
               />
             </div>
 
-            <button className='btn btn-primary btn-block'>Update</button>
+            <button className='btn btn-success btn-block'>Update</button>
           </form>
         </div>
       </div>

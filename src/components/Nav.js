@@ -11,7 +11,7 @@ const Nav = ({ onLogout }) => {
               to='/'
               className='nav-link'
               activeStyle={{
-                color: '#DF691A',
+                color: '#5CB85C',
               }}
               data-toggle='tab'>
               Contacts
@@ -23,7 +23,7 @@ const Nav = ({ onLogout }) => {
               to='/favorites'
               className='nav-link'
               activeStyle={{
-                color: '#DF691A',
+                color: '#5CB85C',
               }}
               data-toggle='tab'>
               Favorites
@@ -32,7 +32,7 @@ const Nav = ({ onLogout }) => {
           <li className='nav-item'>
             <NavLink
               to='/'
-              className='nav-link'
+              className='nav-link text-danger'
               data-toggle='tab'
               onClick={onLogout}>
               Log Out

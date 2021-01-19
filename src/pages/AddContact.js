@@ -110,7 +110,7 @@ const AddContact = () => {
               />
             </div>
 
-            <button className='btn btn-primary btn-block'>Add</button>
+            <button className='btn btn-success btn-block'>Add</button>
           </form>
         </div>
       </div>

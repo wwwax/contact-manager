@@ -21,6 +21,7 @@ const FavoriteContacts = () => {
   return (
     <div className='row'>
       <div className='col-md-12 p-2'>
+        <h3 className='text-center p-4'>Favorites</h3>
         {favoriteContacts.map((contact) => (
           <div className='card mb-2' key={contact.id}>
             <div className='card-body'>

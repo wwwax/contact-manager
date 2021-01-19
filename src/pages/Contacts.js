@@ -8,39 +8,57 @@ const Contacts = () => {
   const [contacts, setContacts] = useState([]);
 
   const getContacts = async () => {
-    db.collection('contacts').onSnapshot((querySnapshot) => {
-      const docs = [];
-      querySnapshot.forEach((doc) => {
-        docs.push({ ...doc.data(), id: doc.id });
+    try {
+      db.collection('contacts').onSnapshot((querySnapshot) => {
+        const docs = [];
+        querySnapshot.forEach((doc) => {
+          docs.push({ ...doc.data(), id: doc.id });
+        });
+        setContacts(docs);
       });
-      setContacts(docs);
-    });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const deleteContact = async (id) => {
-    await db.collection('contacts').doc(id).delete();
-    toast('Contact Removed', {
-      type: 'error',
-      autoClose: 1500,
-    });
+  const deleteContact = async ({ id, name }) => {
+    try {
+      await db.collection('contacts').doc(id).delete();
+      toast(`Contact ${name} Removed`, {
+        type: 'success',
+        autoClose: 1500,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const toggleFavorites = async (contact) => {
-    await db
-      .collection('contacts')
-      .doc(contact.id)
-      .update({ ...contact, favorite: !contact.favorite });
-    toast(
-      !contact.favorite ? 'Contact Added To Favorites' : 'Contact Removed From Favorites',
-      {
-        type: 'info',
-        autoClose: 1500,
-      },
-    );
+    try {
+      await db
+        .collection('contacts')
+        .doc(contact.id)
+        .update({ ...contact, favorite: !contact.favorite });
+      toast(
+        !contact.favorite
+          ? 'Contact Added To Favorites'
+          : 'Contact Removed From Favorites',
+        {
+          type: 'success',
+          autoClose: 1500,
+        },
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getContactForEdit = async (contact) => {
-    await db.collection('contact-edit').doc().set(contact);
+    try {
+      await db.collection('contact-edit').doc().set(contact);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -51,6 +69,7 @@ const Contacts = () => {
     <>
       <div className='row'>
         <div className='col-md-12 p-2'>
+          <h3 className='text-center p-4'>Contacts</h3>
           <Link className='btn btn-success btn-block mb-4' to='/add'>
             Add Contact
           </Link>
@@ -60,7 +79,7 @@ const Contacts = () => {
               <div className='card-body'>
                 <div className='d-flex justify-content-between'>
                   <div>
-                    <h5>{contact.name}</h5>
+                    <h5 className='text-success'>{contact.name}</h5>
                     <h5>{contact.tel}</h5>
                     <h5>{contact.email}</h5>
                   </div>
@@ -72,20 +91,25 @@ const Contacts = () => {
                           ? 'material-icons'
                           : 'material-icons text-success'
                       }
+                      style={{ cursor: 'pointer' }}
                       onClick={() => toggleFavorites(contact)}>
                       star
                     </i>
-                    <Link
-                      className='material-icons text-white'
-                      to='/edit'
-                      onClick={() => {
-                        getContactForEdit(contact);
-                      }}>
-                      edit
+
+                    <Link to='/edit'>
+                      <i
+                        className='material-icons text-white'
+                        onClick={() => {
+                          getContactForEdit(contact);
+                        }}>
+                        edit
+                      </i>
                     </Link>
+
                     <i
+                      style={{ cursor: 'pointer' }}
                       className='material-icons'
-                      onClick={() => deleteContact(contact.id)}>
+                      onClick={() => deleteContact(contact)}>
                       delete
                     </i>
                   </div>
