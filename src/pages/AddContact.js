@@ -56,7 +56,7 @@ const AddContact = () => {
       });
     }
 
-    addContact(contact);
+    addContact({ ...contact, favorite: false });
     setContact({ ...initialContactState });
   };
 

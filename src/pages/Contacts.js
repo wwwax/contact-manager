@@ -25,12 +25,18 @@ const Contacts = () => {
     });
   };
 
-  const addToFavorites = async (contact) => {
-    await db.collection('favorite-contacts').doc().set(contact);
-    toast('Contact Added To Favorites', {
-      type: 'success',
-      autoClose: 1500,
-    });
+  const toggleFavorites = async (contact) => {
+    await db
+      .collection('contacts')
+      .doc(contact.id)
+      .update({ ...contact, favorite: !contact.favorite });
+    toast(
+      !contact.favorite ? 'Contact Added To Favorites' : 'Contact Removed From Favorites',
+      {
+        type: 'info',
+        autoClose: 1500,
+      },
+    );
   };
 
   const getContactForEdit = async (contact) => {
@@ -58,25 +64,30 @@ const Contacts = () => {
                     <h5>{contact.tel}</h5>
                     <h5>{contact.email}</h5>
                   </div>
+
                   <div>
-                    <button
-                      className='btn btn-info btn-block'
-                      onClick={() => addToFavorites(contact)}>
-                      Favorites
-                    </button>
+                    <i
+                      className={
+                        !contact.favorite
+                          ? 'material-icons'
+                          : 'material-icons text-success'
+                      }
+                      onClick={() => toggleFavorites(contact)}>
+                      star
+                    </i>
                     <Link
-                      className='btn btn-warning btn-block'
+                      className='material-icons text-white'
                       to='/edit'
                       onClick={() => {
                         getContactForEdit(contact);
                       }}>
-                      Edit
+                      edit
                     </Link>
-                    <button
-                      className='btn btn-danger btn-block'
+                    <i
+                      className='material-icons'
                       onClick={() => deleteContact(contact.id)}>
-                      Remove
-                    </button>
+                      delete
+                    </i>
                   </div>
                 </div>
               </div>
