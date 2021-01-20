@@ -4,8 +4,6 @@ import Nav from './components/Nav';
 import Login from './pages/Login';
 import Contacts from './pages/Contacts';
 import FavoriteContacts from './pages/FavoriteContacts';
-import AddContact from './pages/AddContact';
-import EditContact from './pages/EditContact';
 import firebase from 'firebase';
 
 const GoogleAuth = () => {
@@ -35,10 +33,8 @@ const GoogleAuth = () => {
         <Router>
           <Nav onLogout={onLogout} />
           <Switch>
-            <Route path='/add' component={AddContact} />
-            <Route path='/edit' component={EditContact} />
+            <Route path='/' exact component={Contacts} />
             <Route path='/favorites' component={FavoriteContacts} />
-            <Route path='/' component={Contacts} />
           </Switch>
         </Router>
       ) : (

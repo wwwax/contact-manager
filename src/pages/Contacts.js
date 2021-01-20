@@ -58,6 +58,12 @@ const Contacts = () => {
     }
   };
 
+  /**
+  |--------------------------------------------------
+  | FORM
+  |--------------------------------------------------
+  */
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setContact({ ...contact, [name]: value });
@@ -72,6 +78,12 @@ const Contacts = () => {
     const re = /^\d+$/;
     return re.test(telNumber);
   };
+
+  /**
+  |--------------------------------------------------
+  | ADD
+  |--------------------------------------------------
+  */
 
   const addContact = async (contact) => {
     try {
