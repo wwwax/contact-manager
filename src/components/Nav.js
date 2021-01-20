@@ -31,6 +31,7 @@ const Nav = ({ onLogout }) => {
           </li>
           <li className='nav-item'>
             <NavLink
+              exact
               to='/'
               className='nav-link text-danger'
               data-toggle='tab'

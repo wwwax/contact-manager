@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import Modal from 'react-modal';
 import { db } from '../firebase';
 import 'react-toastify/dist/ReactToastify.css';
 
+Modal.setAppElement('#root');
+
 const Contacts = () => {
+  const [contact, setContact] = useState({ name: '', tel: '', email: '' });
   const [contacts, setContacts] = useState([]);
+  const [modalAddIsOpen, setModalAddIsOpen] = useState(false);
+  const [modalEditIsOpen, setModalEditIsOpen] = useState(false);
 
   const getContacts = async () => {
     try {
@@ -21,10 +26,10 @@ const Contacts = () => {
     }
   };
 
-  const deleteContact = async ({ id, name }) => {
+  const deleteContact = async (id) => {
     try {
       await db.collection('contacts').doc(id).delete();
-      toast(`Contact ${name} Removed`, {
+      toast('Contact Removed', {
         type: 'success',
         autoClose: 1500,
       });
@@ -53,13 +58,110 @@ const Contacts = () => {
     }
   };
 
-  const getContactForEdit = async (contact) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setContact({ ...contact, [name]: value });
+  };
+
+  const validateEmail = (str) => {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(str).toLowerCase());
+  };
+
+  const validateTelNumber = (telNumber) => {
+    const re = /^\d+$/;
+    return re.test(telNumber);
+  };
+
+  const addContact = async (contact) => {
     try {
-      await db.collection('contact-edit').doc().set(contact);
+      await db.collection('contacts').doc().set(contact);
+      toast('Contact Added', {
+        type: 'success',
+        autoClose: 1500,
+      });
     } catch (error) {
       console.log(error);
     }
   };
+
+  const handleAddSubmit = (e) => {
+    e.preventDefault();
+
+    if (!validateTelNumber(contact.tel)) {
+      return toast('Invalid Telephone Number', {
+        type: 'error',
+        autoClose: 1500,
+      });
+    }
+
+    if (!validateEmail(contact.email)) {
+      return toast('Invalid Email', {
+        type: 'error',
+        autoClose: 1500,
+      });
+    }
+
+    addContact({ ...contact, favorite: false });
+    setContact({ name: '', tel: '', email: '' });
+    setModalAddIsOpen(false);
+  };
+
+  /**
+  |--------------------------------------------------
+  | EDIT
+  |--------------------------------------------------
+  */
+
+  const getContactById = async (id) => {
+    const selectedContact = await (await db.collection('contacts').doc(id).get()).data();
+    setContact({ ...selectedContact, id });
+  };
+
+  const onEditClick = (id) => {
+    setModalEditIsOpen(true);
+    getContactById(id);
+  };
+
+  const updateContact = async () => {
+    try {
+      await db.collection('contacts').doc(contact.id).update(contact);
+      toast('Contact Updated', {
+        type: 'success',
+        autoClose: 1500,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+
+    if (!validateTelNumber(contact.tel)) {
+      return toast('Invalid Telephone Number', {
+        type: 'error',
+        autoClose: 1500,
+      });
+    }
+
+    if (!validateEmail(contact.email)) {
+      return toast('Invalid Email', {
+        type: 'error',
+        autoClose: 1500,
+      });
+    }
+
+    updateContact(contact);
+    setContact({ name: '', tel: '', email: '' });
+    setModalEditIsOpen(false);
+  };
+
+  /**
+  |--------------------------------------------------
+  | USE EFFECT
+  |--------------------------------------------------
+  */
 
   useEffect(() => {
     getContacts();
@@ -70,9 +172,12 @@ const Contacts = () => {
       <div className='row'>
         <div className='col-md-12 p-2'>
           <h3 className='text-center p-4'>Contacts</h3>
-          <Link className='btn btn-success btn-block mb-4' to='/add'>
+
+          <button
+            className='btn btn-primary btn-block mb-4'
+            onClick={() => setModalAddIsOpen(true)}>
             Add Contact
-          </Link>
+          </button>
 
           {contacts.map((contact) => (
             <div className='card mb-2' key={contact.id}>
@@ -96,20 +201,17 @@ const Contacts = () => {
                       star
                     </i>
 
-                    <Link to='/edit'>
-                      <i
-                        className='material-icons text-white'
-                        onClick={() => {
-                          getContactForEdit(contact);
-                        }}>
-                        edit
-                      </i>
-                    </Link>
+                    <i
+                      className='material-icons'
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => onEditClick(contact.id)}>
+                      edit
+                    </i>
 
                     <i
-                      style={{ cursor: 'pointer' }}
                       className='material-icons'
-                      onClick={() => deleteContact(contact)}>
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => deleteContact(contact.id)}>
                       delete
                     </i>
                   </div>
@@ -119,6 +221,143 @@ const Contacts = () => {
           ))}
         </div>
       </div>
+
+      <Modal
+        isOpen={modalAddIsOpen}
+        onRequestClose={() => setModalAddIsOpen(false)}
+        style={{
+          overlay: {
+            backgroundColor: '#32383E',
+          },
+          content: {
+            padding: 0,
+            backgroundColor: '#272B30',
+          },
+        }}>
+        <div className='container'>
+          <div className='row'>
+            <div className='col-md-12 p-2'>
+              <form className='card card-body' onSubmit={handleAddSubmit}>
+                <div className='form-group input-group'>
+                  <div className='input-group-text bg-light'>
+                    <i className='material-icons'>person</i>
+                  </div>
+                  <input
+                    className='form-control'
+                    type='text'
+                    placeholder='Name'
+                    name='name'
+                    value={contact.name}
+                    required
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className='form-group input-group'>
+                  <div className='input-group-text bg-light'>
+                    <i className='material-icons'>phone</i>
+                  </div>
+                  <input
+                    className='form-control'
+                    type='text'
+                    placeholder='Tel'
+                    name='tel'
+                    value={contact.tel}
+                    required
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className='form-group input-group'>
+                  <div className='input-group-text bg-light'>
+                    <i className='material-icons'>email</i>
+                  </div>
+                  <input
+                    className='form-control'
+                    type='text'
+                    placeholder='Email'
+                    name='email'
+                    value={contact.email}
+                    required
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <button className='btn btn-success btn-block'>Add</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={modalEditIsOpen}
+        onRequestClose={() => setModalEditIsOpen(false)}
+        style={{
+          overlay: {
+            backgroundColor: '#32383E',
+          },
+          content: {
+            padding: 0,
+            backgroundColor: '#272B30',
+          },
+        }}>
+        <div className='container'>
+          <div className='row'>
+            <div className='col-md-12 p-2'>
+              <form className='card card-body' onSubmit={handleEditSubmit}>
+                <div className='form-group input-group'>
+                  <div className='input-group-text bg-light'>
+                    <i className='material-icons'>person</i>
+                  </div>
+                  <input
+                    className='form-control'
+                    type='text'
+                    placeholder='Name'
+                    name='name'
+                    value={contact.name}
+                    required
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className='form-group input-group'>
+                  <div className='input-group-text bg-light'>
+                    <i className='material-icons'>phone</i>
+                  </div>
+                  <input
+                    className='form-control'
+                    type='text'
+                    placeholder='Tel'
+                    name='tel'
+                    value={contact.tel}
+                    required
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className='form-group input-group'>
+                  <div className='input-group-text bg-light'>
+                    <i className='material-icons'>email</i>
+                  </div>
+                  <input
+                    className='form-control'
+                    type='text'
+                    placeholder='Email'
+                    name='email'
+                    value={contact.email}
+                    required
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <button className='btn btn-success btn-block'>Update</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
       <ToastContainer />
     </>
   );
