@@ -14,7 +14,7 @@ const Nav = ({ onLogout }) => {
                 color: '#5CB85C',
               }}
               data-toggle='tab'>
-              Contacts
+              <h5>Contacts</h5>
             </NavLink>
           </li>
           <li className='nav-item'>
@@ -26,7 +26,7 @@ const Nav = ({ onLogout }) => {
                 color: '#5CB85C',
               }}
               data-toggle='tab'>
-              Favorites
+              <h5>Favorites</h5>
             </NavLink>
           </li>
           <li className='nav-item'>
@@ -35,7 +35,7 @@ const Nav = ({ onLogout }) => {
               className='nav-link text-danger'
               data-toggle='tab'
               onClick={onLogout}>
-              Log Out
+              <h5>Log Out</h5>
             </NavLink>
           </li>
         </ul>
