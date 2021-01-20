@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import Nav from './components/Nav';
 import Login from './pages/Login';
 import Contacts from './pages/Contacts';
 import FavoriteContacts from './pages/FavoriteContacts';
 import firebase from 'firebase';
+import 'react-toastify/dist/ReactToastify.css';
 
 const GoogleAuth = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -40,6 +42,8 @@ const GoogleAuth = () => {
       ) : (
         <Login onLogin={onLogin} />
       )}
+
+      <ToastContainer />
     </div>
   );
 };

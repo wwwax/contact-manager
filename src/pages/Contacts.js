@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Modal from 'react-modal';
 import { db } from '../firebase';
-import 'react-toastify/dist/ReactToastify.css';
 
 Modal.setAppElement('#root');
 
@@ -180,58 +179,54 @@ const Contacts = () => {
   }, []);
 
   return (
-    <>
-      <div className='row'>
-        <div className='col-md-12 p-2'>
-          <h3 className='text-center p-4'>Contacts</h3>
+    <div className='row'>
+      <div className='col-md-12 p-2'>
+        <h3 className='text-center p-4'>Contacts</h3>
 
-          <button
-            className='btn btn-primary btn-block mb-4'
-            onClick={() => setModalAddIsOpen(true)}>
-            Add Contact
-          </button>
+        <button
+          className='btn btn-primary btn-block mb-4'
+          onClick={() => setModalAddIsOpen(true)}>
+          Add Contact
+        </button>
 
-          {contacts.map((contact) => (
-            <div className='card mb-2' key={contact.id}>
-              <div className='card-body'>
-                <div className='d-flex justify-content-between'>
-                  <div>
-                    <h5 className='text-success'>{contact.name}</h5>
-                    <h5>{contact.tel}</h5>
-                    <h5>{contact.email}</h5>
-                  </div>
+        {contacts.map((contact) => (
+          <div className='card mb-2' key={contact.id}>
+            <div className='card-body'>
+              <div className='d-flex justify-content-between'>
+                <div>
+                  <h5 className='text-success'>{contact.name}</h5>
+                  <h5>{contact.tel}</h5>
+                  <h5>{contact.email}</h5>
+                </div>
 
-                  <div>
-                    <i
-                      className={
-                        !contact.favorite
-                          ? 'material-icons'
-                          : 'material-icons text-success'
-                      }
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => toggleFavorites(contact)}>
-                      star
-                    </i>
+                <div>
+                  <i
+                    className={
+                      !contact.favorite ? 'material-icons' : 'material-icons text-success'
+                    }
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => toggleFavorites(contact)}>
+                    star
+                  </i>
 
-                    <i
-                      className='material-icons'
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => onEditClick(contact.id)}>
-                      edit
-                    </i>
+                  <i
+                    className='material-icons'
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => onEditClick(contact.id)}>
+                    edit
+                  </i>
 
-                    <i
-                      className='material-icons'
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => deleteContact(contact.id)}>
-                      delete
-                    </i>
-                  </div>
+                  <i
+                    className='material-icons'
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => deleteContact(contact.id)}>
+                    delete
+                  </i>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
       <Modal
@@ -369,9 +364,7 @@ const Contacts = () => {
           </div>
         </div>
       </Modal>
-
-      <ToastContainer />
-    </>
+    </div>
   );
 };
 
