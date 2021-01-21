@@ -29,9 +29,9 @@ const GoogleAuth = () => {
     });
   }, []);
 
-  return (
-    <div className='container p-4'>
-      {isLogin ? (
+  if (isLogin) {
+    return (
+      <div className='container p-4'>
         <Router>
           <Nav onLogout={onLogout} />
           <Switch>
@@ -39,13 +39,13 @@ const GoogleAuth = () => {
             <Route path='/favorites' component={FavoriteContacts} />
           </Switch>
         </Router>
-      ) : (
-        <Login onLogin={onLogin} />
-      )}
 
-      <ToastContainer />
-    </div>
-  );
+        <ToastContainer />
+      </div>
+    );
+  } else {
+    return <Login onLogin={onLogin} />;
+  }
 };
 
 export default GoogleAuth;

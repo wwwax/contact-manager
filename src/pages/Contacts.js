@@ -1,34 +1,85 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import Modal from 'react-modal';
+import { toast } from 'react-toastify';
 import { db } from '../firebase';
 
 Modal.setAppElement('#root');
 
 const Contacts = () => {
-  const [contact, setContact] = useState({ name: '', tel: '', email: '' });
+  const [contact, setContact] = useState({
+    name: '',
+    tel: '',
+    email: '',
+    favorite: false,
+  });
   const [contacts, setContacts] = useState([]);
-  const [modalAddIsOpen, setModalAddIsOpen] = useState(false);
-  const [modalEditIsOpen, setModalEditIsOpen] = useState(false);
+  const [idForEdit, setIdForEdit] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  const getContacts = async () => {
+  /**
+  |--------------------------------------------------
+  | CREATE
+  |--------------------------------------------------
+  */
+
+  const addContact = async () => {
     try {
-      db.collection('contacts').onSnapshot((querySnapshot) => {
-        const docs = [];
-        querySnapshot.forEach((doc) => {
-          docs.push({ ...doc.data(), id: doc.id });
-        });
-        setContacts(docs);
+      await db.collection('contacts').doc().set(contact);
+      toast('Contact Added', {
+        type: 'success',
+        autoClose: 1500,
       });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const deleteContact = async (id) => {
+  const onAddClick = () => {
+    setModalIsOpen(true);
+  };
+
+  /**
+  |--------------------------------------------------
+  | READ
+  |--------------------------------------------------
+  */
+
+  const getContacts = async () => {
     try {
-      await db.collection('contacts').doc(id).delete();
-      toast('Contact Removed', {
+      db.collection('contacts').onSnapshot((querySnapshot) => {
+        const allContacts = [];
+        querySnapshot.forEach((doc) => {
+          allContacts.push({ ...doc.data(), id: doc.id });
+        });
+        setContacts(allContacts);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  /**
+  |--------------------------------------------------
+  | UPDATE
+  |--------------------------------------------------
+  */
+
+  const getContactById = async (id) => {
+    const selectedContact = await (await db.collection('contacts').doc(id).get()).data();
+    setContact(selectedContact);
+  };
+
+  const onEditClick = (id) => {
+    getContactById(id);
+    setIdForEdit(id);
+    setModalIsOpen(true);
+  };
+
+  const updateContact = async (contact) => {
+    try {
+      await db.collection('contacts').doc(contact.id).update(contact);
+      setIdForEdit('');
+      toast('Contact Updated', {
         type: 'success',
         autoClose: 1500,
       });
@@ -59,7 +110,25 @@ const Contacts = () => {
 
   /**
   |--------------------------------------------------
-  | FORM
+  | DELETE
+  |--------------------------------------------------
+  */
+
+  const deleteContact = async (id) => {
+    try {
+      await db.collection('contacts').doc(id).delete();
+      toast('Contact Removed', {
+        type: 'success',
+        autoClose: 1500,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  /**
+  |--------------------------------------------------
+  | SUBMIT
   |--------------------------------------------------
   */
 
@@ -78,25 +147,7 @@ const Contacts = () => {
     return re.test(telNumber);
   };
 
-  /**
-  |--------------------------------------------------
-  | ADD
-  |--------------------------------------------------
-  */
-
-  const addContact = async (contact) => {
-    try {
-      await db.collection('contacts').doc().set(contact);
-      toast('Contact Added', {
-        type: 'success',
-        autoClose: 1500,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleAddSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!validateTelNumber(contact.tel)) {
@@ -113,66 +164,11 @@ const Contacts = () => {
       });
     }
 
-    addContact({ ...contact, favorite: false });
-    setContact({ name: '', tel: '', email: '' });
-    setModalAddIsOpen(false);
+    idForEdit ? updateContact(contact) : addContact();
+
+    setContact({ name: '', tel: '', email: '', favorite: false });
+    setModalIsOpen(false);
   };
-
-  /**
-  |--------------------------------------------------
-  | EDIT
-  |--------------------------------------------------
-  */
-
-  const getContactById = async (id) => {
-    const selectedContact = await (await db.collection('contacts').doc(id).get()).data();
-    setContact({ ...selectedContact, id });
-  };
-
-  const onEditClick = (id) => {
-    setModalEditIsOpen(true);
-    getContactById(id);
-  };
-
-  const updateContact = async () => {
-    try {
-      await db.collection('contacts').doc(contact.id).update(contact);
-      toast('Contact Updated', {
-        type: 'success',
-        autoClose: 1500,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleEditSubmit = (e) => {
-    e.preventDefault();
-
-    if (!validateTelNumber(contact.tel)) {
-      return toast('Invalid Telephone Number', {
-        type: 'error',
-        autoClose: 1500,
-      });
-    }
-
-    if (!validateEmail(contact.email)) {
-      return toast('Invalid Email', {
-        type: 'error',
-        autoClose: 1500,
-      });
-    }
-
-    updateContact(contact);
-    setContact({ name: '', tel: '', email: '' });
-    setModalEditIsOpen(false);
-  };
-
-  /**
-  |--------------------------------------------------
-  | USE EFFECT
-  |--------------------------------------------------
-  */
 
   useEffect(() => {
     getContacts();
@@ -183,9 +179,7 @@ const Contacts = () => {
       <div className='col-md-12 p-2'>
         <h3 className='text-center p-4'>Contacts</h3>
 
-        <button
-          className='btn btn-primary btn-block mb-4'
-          onClick={() => setModalAddIsOpen(true)}>
+        <button className='btn btn-primary btn-block mb-4' onClick={onAddClick}>
           Add Contact
         </button>
 
@@ -230,8 +224,8 @@ const Contacts = () => {
       </div>
 
       <Modal
-        isOpen={modalAddIsOpen}
-        onRequestClose={() => setModalAddIsOpen(false)}
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
         style={{
           overlay: {
             backgroundColor: '#32383E',
@@ -244,7 +238,7 @@ const Contacts = () => {
         <div className='container'>
           <div className='row'>
             <div className='col-md-12 p-2'>
-              <form className='card card-body' onSubmit={handleAddSubmit}>
+              <form className='card card-body' onSubmit={handleSubmit}>
                 <div className='form-group input-group'>
                   <div className='input-group-text bg-light'>
                     <i className='material-icons'>person</i>
@@ -290,75 +284,9 @@ const Contacts = () => {
                   />
                 </div>
 
-                <button className='btn btn-success btn-block'>Add</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </Modal>
-
-      <Modal
-        isOpen={modalEditIsOpen}
-        onRequestClose={() => setModalEditIsOpen(false)}
-        style={{
-          overlay: {
-            backgroundColor: '#32383E',
-          },
-          content: {
-            padding: 0,
-            backgroundColor: '#272B30',
-          },
-        }}>
-        <div className='container'>
-          <div className='row'>
-            <div className='col-md-12 p-2'>
-              <form className='card card-body' onSubmit={handleEditSubmit}>
-                <div className='form-group input-group'>
-                  <div className='input-group-text bg-light'>
-                    <i className='material-icons'>person</i>
-                  </div>
-                  <input
-                    className='form-control'
-                    type='text'
-                    placeholder='Name'
-                    name='name'
-                    value={contact.name}
-                    required
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className='form-group input-group'>
-                  <div className='input-group-text bg-light'>
-                    <i className='material-icons'>phone</i>
-                  </div>
-                  <input
-                    className='form-control'
-                    type='text'
-                    placeholder='Tel'
-                    name='tel'
-                    value={contact.tel}
-                    required
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className='form-group input-group'>
-                  <div className='input-group-text bg-light'>
-                    <i className='material-icons'>email</i>
-                  </div>
-                  <input
-                    className='form-control'
-                    type='text'
-                    placeholder='Email'
-                    name='email'
-                    value={contact.email}
-                    required
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <button className='btn btn-success btn-block'>Update</button>
+                <button className='btn btn-success btn-block'>
+                  {!idForEdit ? 'Add' : 'Update'}
+                </button>
               </form>
             </div>
           </div>
