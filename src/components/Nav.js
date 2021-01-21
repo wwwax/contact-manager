@@ -17,6 +17,7 @@ const Nav = ({ onLogout }) => {
               <h5>Contacts</h5>
             </NavLink>
           </li>
+
           <li className='nav-item'>
             <NavLink
               exact
@@ -29,15 +30,15 @@ const Nav = ({ onLogout }) => {
               <h5>Favorites</h5>
             </NavLink>
           </li>
+
           <li className='nav-item'>
-            <NavLink
-              exact
-              to='/'
+            <div
               className='nav-link'
+              style={{ cursor: 'pointer' }}
               data-toggle='tab'
               onClick={onLogout}>
-              <h5>Log Out</h5>
-            </NavLink>
+              <h5>Logout</h5>
+            </div>
           </li>
         </ul>
       </div>
