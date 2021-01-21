@@ -13,7 +13,7 @@ const Contacts = () => {
     favorite: false,
   });
   const [contacts, setContacts] = useState([]);
-  const [idForEdit, setIdForEdit] = useState('');
+  const [isUpdated, setIsUpdated] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   /**
@@ -34,7 +34,7 @@ const Contacts = () => {
     }
   };
 
-  const onAddClick = () => {
+  const onAddButtonClick = () => {
     setModalIsOpen(true);
   };
 
@@ -69,16 +69,16 @@ const Contacts = () => {
     setContact(selectedContact);
   };
 
-  const onEditClick = (id) => {
+  const onEditButtonClick = (id) => {
     getContactById(id);
-    setIdForEdit(id);
+    setIsUpdated(true);
     setModalIsOpen(true);
   };
 
-  const updateContact = async (contact) => {
+  const updateContact = async () => {
     try {
       await db.collection('contacts').doc(contact.id).update(contact);
-      setIdForEdit('');
+      setIsUpdated(false);
       toast('Contact Updated', {
         type: 'success',
         autoClose: 1500,
@@ -164,7 +164,7 @@ const Contacts = () => {
       });
     }
 
-    idForEdit ? updateContact(contact) : addContact();
+    isUpdated ? updateContact() : addContact();
 
     setContact({ name: '', tel: '', email: '', favorite: false });
     setModalIsOpen(false);
@@ -179,7 +179,7 @@ const Contacts = () => {
       <div className='col-md-12 p-2'>
         <h3 className='text-center p-4'>Contacts</h3>
 
-        <button className='btn btn-primary btn-block mb-4' onClick={onAddClick}>
+        <button className='btn btn-primary btn-block mb-4' onClick={onAddButtonClick}>
           Add Contact
         </button>
 
@@ -206,7 +206,7 @@ const Contacts = () => {
                   <i
                     className='material-icons'
                     style={{ cursor: 'pointer' }}
-                    onClick={() => onEditClick(contact.id)}>
+                    onClick={() => onEditButtonClick(contact.id)}>
                     edit
                   </i>
 
@@ -285,7 +285,7 @@ const Contacts = () => {
                 </div>
 
                 <button className='btn btn-success btn-block'>
-                  {!idForEdit ? 'Add' : 'Update'}
+                  {isUpdated ? 'Update' : 'Add'}
                 </button>
               </form>
             </div>
