@@ -33,7 +33,7 @@ const Nav = ({ onLogout }) => {
             <NavLink
               exact
               to='/'
-              className='nav-link text-danger'
+              className='nav-link'
               data-toggle='tab'
               onClick={onLogout}>
               <h5>Log Out</h5>
