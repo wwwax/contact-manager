@@ -42,9 +42,9 @@ const ContactList = ({ contacts, setModalIsOpen, setIdForEdit }) => {
 
   return (
     <div className='row'>
-      <div className='col-md-12'>
+      <div className='col-md-12 p-2'>
         <div className='d-flex justify-content-center align-items-center'>
-          <h3 className='text-center p-4'>Contacts</h3>
+          <h3 className='text-center p-4 mb-0'>Contacts</h3>
           <i
             className='material-icons text-success'
             style={{ cursor: 'pointer' }}
