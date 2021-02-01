@@ -8,7 +8,7 @@ import FavoriteContacts from './pages/FavoriteContacts';
 import firebase from 'firebase';
 import 'react-toastify/dist/ReactToastify.css';
 
-const GoogleAuth = () => {
+const App = () => {
   const [isLogin, setIsLogin] = useState(false);
 
   const onLogin = () => {
@@ -48,4 +48,4 @@ const GoogleAuth = () => {
   }
 };
 
-export default GoogleAuth;
+export default App;

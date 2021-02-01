@@ -156,7 +156,7 @@ const ModalWindow = ({ modalIsOpen, setModalIsOpen, idForEdit, setIdForEdit }) =
               </div>
 
               <button className='btn btn-success btn-block'>
-                {idForEdit === '' ? 'Update' : 'Add'}
+                {idForEdit === '' ? 'Add' : 'Update'}
               </button>
             </form>
           </div>
