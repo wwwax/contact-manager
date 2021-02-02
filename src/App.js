@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import Nav from './components/Nav';
 import Login from './pages/Login';
 import Contacts from './pages/Contacts';
-import FavoriteContacts from './pages/FavoriteContacts';
+import Favorites from './pages/Favorites';
 import firebase from 'firebase';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -36,7 +36,7 @@ const App = () => {
           <Nav onLogout={onLogout} />
           <Switch>
             <Route path='/' exact component={Contacts} />
-            <Route path='/favorites' component={FavoriteContacts} />
+            <Route path='/favorites' component={Favorites} />
           </Switch>
         </Router>
 

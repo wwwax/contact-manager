@@ -2,7 +2,7 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import { db } from '../firebase';
 
-const ContactList = ({ contacts, setModalIsOpen, setIdForEdit }) => {
+const ContactList = ({ title, contacts, setModalIsOpen, setIdForEdit }) => {
   const toggleFavorites = async (contact) => {
     try {
       await db
@@ -44,13 +44,7 @@ const ContactList = ({ contacts, setModalIsOpen, setIdForEdit }) => {
     <div className='row'>
       <div className='col-md-12 p-2'>
         <div className='d-flex justify-content-center align-items-center'>
-          <h3 className='text-center p-4 mb-0'>Contacts</h3>
-          <i
-            className='material-icons text-success'
-            style={{ cursor: 'pointer' }}
-            onClick={() => setModalIsOpen(true)}>
-            add
-          </i>
+          <h3 className='text-center p-4 mb-0'>{title}</h3>
         </div>
 
         {contacts.map((contact) => (

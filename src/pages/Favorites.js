@@ -3,7 +3,7 @@ import ContactList from '../components/ContactList';
 import ModalWindow from '../components/ModalWindow';
 import { db } from '../firebase';
 
-const Contacts = () => {
+const Favorites = () => {
   const [contacts, setContacts] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [idForEdit, setIdForEdit] = useState('');
@@ -12,10 +12,11 @@ const Contacts = () => {
     try {
       db.collection('contacts').onSnapshot((querySnapshot) => {
         const allContacts = [];
-        querySnapshot.forEach((doc) => {
-          allContacts.push({ ...doc.data(), id: doc.id });
+        querySnapshot.forEach((el) => {
+          allContacts.push(el.data());
         });
-        setContacts(allContacts);
+
+        setContacts(allContacts.filter((contact) => contact.favorite));
       });
     } catch (error) {
       console.log(error);
@@ -28,16 +29,8 @@ const Contacts = () => {
 
   return (
     <>
-      <div className='col-md-12'>
-        <div className='d-flex justify-content-center'>
-          <button className='btn btn-success btn-lg' onClick={() => setModalIsOpen(true)}>
-            Add
-          </button>
-        </div>
-      </div>
-
       <ContactList
-        title={'Contacts'}
+        title={'Favorites'}
         contacts={contacts}
         setModalIsOpen={setModalIsOpen}
         setIdForEdit={setIdForEdit}
@@ -52,4 +45,4 @@ const Contacts = () => {
   );
 };
 
-export default Contacts;
+export default Favorites;
