@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import ContactsPage from './pages/ContactsPage';
+import FavoritesPage from './pages/FavoritesPage';
+import AuthPage from './pages/AuthPage';
 import Nav from './components/Nav';
-import Login from './pages/Login';
-import Contacts from './pages/Contacts';
-import Favorites from './pages/Favorites';
 import firebase from 'firebase';
 import 'react-toastify/dist/ReactToastify.css';
 
-const App = () => {
-  const [isLogin, setIsLogin] = useState(false);
+const App: React.FC = () => {
+  const [isLogin, setIsLogin] = useState<boolean>(false);
 
   const onLogin = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -35,8 +35,8 @@ const App = () => {
         <Router>
           <Nav onLogout={onLogout} />
           <Switch>
-            <Route path='/' exact component={Contacts} />
-            <Route path='/favorites' component={Favorites} />
+            <Route path='/' component={ContactsPage} exact />
+            <Route path='/favorites' component={FavoritesPage} />
           </Switch>
         </Router>
 
@@ -44,7 +44,7 @@ const App = () => {
       </div>
     );
   } else {
-    return <Login onLogin={onLogin} />;
+    return <AuthPage onLogin={onLogin} />;
   }
 };
 

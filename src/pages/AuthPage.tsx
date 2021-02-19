@@ -1,6 +1,10 @@
 import React from 'react';
 
-const Login = ({ onLogin }) => {
+interface AuthPageProps {
+  onLogin(): void;
+}
+
+const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   return (
     <div className='container p-4'>
       <div className='row d-flex justify-content-center'>
@@ -17,4 +21,4 @@ const Login = ({ onLogin }) => {
   );
 };
 
-export default Login;
+export default AuthPage;

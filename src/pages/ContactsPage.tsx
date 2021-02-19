@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ContactList from '../components/ContactList';
 import ModalWindow from '../components/ModalWindow';
 import { db } from '../firebase';
+import { IContact } from '../interfaces';
+import { useModal } from '../hooks';
 
-const Contacts = () => {
-  const [contacts, setContacts] = useState([]);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+const ContactsPage: React.FC = () => {
+  const [contacts, setContacts] = useState<IContact[]>([]);
   const [idForEdit, setIdForEdit] = useState('');
+  const [isModalOpen, , toggleModal] = useModal();
 
-  const getContacts = async () => {
+  const getContacts = () => {
     try {
       db.collection('contacts').onSnapshot((querySnapshot) => {
-        const allContacts = [];
+        const allContacts: any = [];
+
         querySnapshot.forEach((doc) => {
           allContacts.push({ ...doc.data(), id: doc.id });
         });
+
         setContacts(allContacts);
       });
     } catch (error) {
@@ -28,23 +32,21 @@ const Contacts = () => {
 
   return (
     <>
-      <div className='col-md-12'>
-        <div className='d-flex justify-content-center'>
-          <button className='btn btn-success btn-lg' onClick={() => setModalIsOpen(true)}>
-            Add
-          </button>
-        </div>
+      <div className='col-md-12 d-flex justify-content-center'>
+        <button className='btn btn-success btn-lg' onClick={toggleModal}>
+          Add
+        </button>
       </div>
 
       <ContactList
         title={'Contacts'}
         contacts={contacts}
-        setModalIsOpen={setModalIsOpen}
+        toggleModal={toggleModal}
         setIdForEdit={setIdForEdit}
       />
       <ModalWindow
-        modalIsOpen={modalIsOpen}
-        setModalIsOpen={setModalIsOpen}
+        isOpen={isModalOpen}
+        toggleModal={toggleModal}
         idForEdit={idForEdit}
         setIdForEdit={setIdForEdit}
       />
@@ -52,4 +54,4 @@ const Contacts = () => {
   );
 };
 
-export default Contacts;
+export default ContactsPage;

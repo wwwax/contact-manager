@@ -1,6 +1,11 @@
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-const Nav = ({ onLogout }) => {
+interface NavProps {
+  onLogout(): void;
+}
+
+const Nav: React.FC<NavProps> = ({ onLogout }) => {
   return (
     <div className='row'>
       <div className='col-md-12 p-2'>
@@ -14,7 +19,7 @@ const Nav = ({ onLogout }) => {
                 color: '#5CB85C',
               }}
               data-toggle='tab'>
-              <h5>Contacts</h5>
+              <h6>Contacts</h6>
             </NavLink>
           </li>
 
@@ -27,7 +32,7 @@ const Nav = ({ onLogout }) => {
                 color: '#5CB85C',
               }}
               data-toggle='tab'>
-              <h5>Favorites</h5>
+              <h6>Favorites</h6>
             </NavLink>
           </li>
 
@@ -37,7 +42,7 @@ const Nav = ({ onLogout }) => {
               style={{ cursor: 'pointer' }}
               data-toggle='tab'
               onClick={onLogout}>
-              <h5>Logout</h5>
+              <h6>Logout</h6>
             </div>
           </li>
         </ul>

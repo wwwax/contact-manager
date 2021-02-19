@@ -1,9 +1,23 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
+import classNames from 'classnames';
 import { toast } from 'react-toastify';
+import { IContact } from '../interfaces';
 import { db } from '../firebase';
 
-const ContactList = ({ title, contacts, setModalIsOpen, setIdForEdit }) => {
-  const toggleFavorites = async (contact) => {
+type ContactListProps = {
+  title: string;
+  contacts: IContact[];
+  toggleModal: () => void;
+  setIdForEdit: Dispatch<SetStateAction<string>>;
+};
+
+const ContactList: React.FC<ContactListProps> = ({
+  title,
+  contacts,
+  toggleModal,
+  setIdForEdit,
+}) => {
+  const toggleFavorites = async (contact: IContact) => {
     try {
       await db
         .collection('contacts')
@@ -23,12 +37,7 @@ const ContactList = ({ title, contacts, setModalIsOpen, setIdForEdit }) => {
     }
   };
 
-  const onEditButtonClick = (id) => {
-    setModalIsOpen(true);
-    setIdForEdit(id);
-  };
-
-  const deleteContact = async (id) => {
+  const removeContact = async (id: string) => {
     try {
       await db.collection('contacts').doc(id).delete();
       toast('Contact Removed', {
@@ -38,6 +47,11 @@ const ContactList = ({ title, contacts, setModalIsOpen, setIdForEdit }) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const editContact = (id: string) => {
+    setIdForEdit(id);
+    toggleModal();
   };
 
   return (
@@ -59,25 +73,18 @@ const ContactList = ({ title, contacts, setModalIsOpen, setIdForEdit }) => {
 
                 <div>
                   <i
-                    className={
-                      !contact.favorite ? 'material-icons' : 'material-icons text-success'
-                    }
-                    style={{ cursor: 'pointer' }}
+                    className={classNames('material-icons', {
+                      'text-success': contact.favorite,
+                    })}
                     onClick={() => toggleFavorites(contact)}>
                     star
                   </i>
-
-                  <i
-                    className='material-icons'
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => onEditButtonClick(contact.id)}>
+                  <i className='material-icons' onClick={() => editContact(contact.id!)}>
                     edit
                   </i>
-
                   <i
                     className='material-icons'
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => deleteContact(contact.id)}>
+                    onClick={() => removeContact(contact.id!)}>
                     delete
                   </i>
                 </div>
